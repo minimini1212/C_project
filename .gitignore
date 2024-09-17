@@ -7,6 +7,8 @@
 
 #vs
 .vs/
+
+# Visual Studio / .NET
 bin/
 obj/
 
