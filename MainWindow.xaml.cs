@@ -48,7 +48,7 @@ public partial class MainWindow : Window
         InitialGrid.Visibility = Visibility.Collapsed;
 
         // standbyScreen 페이지를 Frame에 로드
-        MainFrame.Navigate(new standbyScreen());
+        MainFrame.Navigate(new standbyScreen(_conn));
     }
 
     private void signUp(object sender, RoutedEventArgs e)
