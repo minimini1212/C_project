@@ -8,11 +8,11 @@
         Title="LoginWindow" Height="300" Width="400" Background="White">
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBox Name="UsernameTextBox" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="UsernameTextBox_TextChanged"/>
+            <TextBox Name="NicknameTextBox" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="NicknameTextBox_TextChanged"/>
             <PasswordBox Name="PasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" PasswordChanged="PasswordBox_TextChanged"/>
             <Button Content="로그인" Width="100" Height="30" Click="Login_Click"/>
         </StackPanel>
-        <Label Content="이름" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="32" Margin="32,87,0,0"/>
+        <Label Content="닉네임" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="32" Margin="32,87,0,0"/>
         <Label Content="비밀번호" HorizontalAlignment="Left" Height="28" VerticalAlignment="Center" Width="65" Margin="21,0,0,0"/>
     </Grid>
 </Window>
