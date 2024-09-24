@@ -67,14 +67,14 @@ namespace myProjectC
             _userData.UserName = UsernameTextBox.Text;
         }
         // UserData 클래스의 Password 속성에 TextBox에서 입력된 값을 저장
-        private void PasswordBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void PasswordBox_TextChanged(object sender, RoutedEventArgs e)
         {
-            _userData.Password = PasswordBox.Text;
+            _userData.Password = PasswordBox.Password;
         }
         // UserData 클래스의 RePassword 속성에 TextBox에서 입력된 값을 저장
-        private void RePasswordBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void RePasswordBox_TextChanged(object sender, RoutedEventArgs e)
         {
-            _userData.RePassword = RePasswordBox.Text;
+            _userData.RePassword = RePasswordBox.Password;
         }
         // UserData 클래스의 PhoneNumber 속성에 TextBox에서 입력된 값을 저장
         private void PhoneNumber_TextChanged(object sender, TextChangedEventArgs e)
@@ -100,33 +100,33 @@ namespace myProjectC
                 _userData.BilliardScore == 0)
             {
                 MessageBox.Show("항목에 알맞게 입력해주세요");
+                return;
             }
-            else
+            if (_userData.Password != _userData.RePassword)
             {
-                // 모든 항목이 올바르게 입력된 경우 처리
-                MessageBox.Show("회원가입이 완료되었습니다.");
-                try
-                {
-                    Insert(_userData.UserName, _userData.Password, _userData.PhoneNumber, _userData.BilliardScore);
-                    MessageBox.Show($"DB에 입력 성공");
-                    this.Close();
-                    
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"DB에 입력 실패 \n {ex.Message}");
-                }
-                
+                MessageBox.Show("비밀번호가 일치하지 않습니다.");
+                PasswordBox.Password = string.Empty;  // 비밀번호 입력 필드를 초기화
+                RePasswordBox.Password = string.Empty; // 확인용 비밀번호 필드를 초기화
+                return;
             }
+            
+            // 모든 항목이 올바르게 입력된 경우 처리
+            MessageBox.Show("회원가입이 완료되었습니다.");
+            try
+            {
+                Insert(_userData.UserName, _userData.Password, _userData.PhoneNumber, _userData.BilliardScore);
+                MessageBox.Show($"DB에 입력 성공");
+                this.Close();
 
-   
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"DB에 입력 실패 \n {ex.Message}");
+            }
         }
 
         private void Insert(string userName, string password, string phoneNumber, int billiardScore)
         {
-
-
-
             string query = "" +
                 "INSERT INTO minic_db.userdata (user_name, password, phone_number, billiard_score) " +
                 "VALUES (@userName, @password, @phoneNumber, @billiardScore);";
@@ -134,19 +134,23 @@ namespace myProjectC
             using (MySqlCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = query;
-                cmd.Parameters.Add("@userName", MySqlDbType.VarChar);
-                cmd.Parameters.Add("@password", MySqlDbType.VarChar);
-                cmd.Parameters.Add("@phoneNumber", MySqlDbType.VarChar);
-                cmd.Parameters.Add("@billiardScore", MySqlDbType.Int32);
+                // 이렇게 입력하면 타입을 찾아가기 때문에 시간이 좀 더 걸린다고 함.
+                cmd.Parameters.AddWithValue("@userName", userName);
+                cmd.Parameters.AddWithValue("@password", password);
+                cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+                cmd.Parameters.AddWithValue("@billiardScore", billiardScore);
+                //cmd.Parameters.Add("@userName", MySqlDbType.VarChar);
+                //cmd.Parameters.Add("@password", MySqlDbType.VarChar);
+                //cmd.Parameters.Add("@phoneNumber", MySqlDbType.VarChar);
+                //cmd.Parameters.Add("@billiardScore", MySqlDbType.Int32);
 
-                cmd.Parameters["@userName"].Value = userName;
-                cmd.Parameters["@password"].Value = password;
-                cmd.Parameters["@phoneNumber"].Value = phoneNumber;
-                cmd.Parameters["@billiardScore"].Value = billiardScore;
+                //cmd.Parameters["@userName"].Value = userName;
+                //cmd.Parameters["@password"].Value = password;
+                //cmd.Parameters["@phoneNumber"].Value = phoneNumber;
+                //cmd.Parameters["@billiardScore"].Value = billiardScore;
 
                 cmd.ExecuteNonQuery();  // 데이터베이스에 명령 실행
             }
         }
-
     }
 }

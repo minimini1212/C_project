@@ -9,8 +9,8 @@
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBox Name="UsernameTextBox" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="UsernameTextBox_TextChanged"/>
-            <TextBox Name="PasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" TextChanged="PasswordBox_TextChanged"/>
-            <TextBox Name="RePasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" TextChanged="RePasswordBox_TextChanged"/>
+            <PasswordBox Name="PasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" PasswordChanged="PasswordBox_TextChanged"/>
+            <PasswordBox Name="RePasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" PasswordChanged="RePasswordBox_TextChanged"/>
             <TextBox Name="PhoneNumber" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="PhoneNumber_TextChanged"/>
             <TextBox Name="BilliardScore" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="BilliardScore_TextChanged"/>
             <Button Content="회원가입" Width="100" Height="30" Click="signUp_Click"/>

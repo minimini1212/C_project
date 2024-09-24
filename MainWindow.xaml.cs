@@ -60,7 +60,7 @@ public partial class MainWindow : Window
 
     private void signIn(object sender, RoutedEventArgs e)
     {
-        LoginWindow loginWindow = new LoginWindow(this);
+        LoginWindow loginWindow = new LoginWindow(this, _conn);
         loginWindow.Show();
     }
 }
