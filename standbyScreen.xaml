@@ -9,6 +9,13 @@
       Title="standbyScreen">
 
     <Grid Background="White">
-        <Label Content="로그인 후 화면입니다." FontSize="24" HorizontalAlignment="Center" Height="48" VerticalAlignment="Top" Width="354" Margin="0,154,0,0"/>
+        <Label Content="테이블 상황" FontSize="24" HorizontalAlignment="Left" Height="48" VerticalAlignment="Top" Width="144" Margin="10,10,0,0"/>
+        <Button Content="테이블 추가" HorizontalAlignment="Left" Height="48" Margin="422,10,0,0" VerticalAlignment="Top" Width="169" Click="AddTable_Button_Click"/>
+        <Button Content="테이블 삭제" HorizontalAlignment="Left" Height="48" Margin="596,10,0,0" VerticalAlignment="Top" Width="169" Click="DeleteTable_Button_Click"/>
+        <!-- 테이블을 동적으로 추가할 컨테이너 -->
+        <UniformGrid x:Name="TableGrid" Rows="2" Columns="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" />
+        
     </Grid>
+    
+    
 </Page>
