@@ -92,6 +92,9 @@ namespace myProjectC
                 MessageBox.Show($"로그인에 성공하였습니다.");
                 UpdateStateByLogIn(_userId);
                 _mainWindow.LoadStandbyScreen();
+                // 입장 회원 명단 실행
+                _mainWindow.LoadLogInUserListWindow();
+
                 this.Close();
             } 
             catch (Exception ex)
