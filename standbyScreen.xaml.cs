@@ -24,6 +24,7 @@ namespace myProjectC
     {
 
         private MySqlConnection _conn; // MySQL 연결을 위한 필드 추가
+        private string tableStatus; // 테이블 상태
 
         public standbyScreen(MySqlConnection conn)
         {
@@ -70,7 +71,7 @@ namespace myProjectC
         private void RefreshTableDisplay()
         {
             TableGrid.Children.Clear(); // 기존의 테이블 레이블을 모두 제거
-            //_tableList.Clear(); // 테이블 리스트 초기화
+            _tableList.Clear(); // 테이블 리스트 초기화
             SelectTable(); // 새로운 데이터 가져오기
         }
 
@@ -95,10 +96,19 @@ namespace myProjectC
 
                         _tableList.Add(table);
 
+                        if (table.isAvailable) {
+                            tableStatus = "게임 가능";
+                        } 
+                        else if (!table.isAvailable) 
+                        {
+                            tableStatus = "게임 불가능";
+                        }
+
                         // 새로운 테이블을 나타내는 Label을 생성
                         Label newTable = new Label
-                        {
-                            Content = $"테이블 번호: {table.tableId}, 테이블 상태: {table.isAvailable}",
+                        {   //이렇게 하니까 id가 자동생성이라 다 지우고 생성하면 1이 아닌 상태로 시작해버림..
+                            //Content = $"테이블 번호: {table.tableId}, 테이블 상태: {table.isAvailable}",
+                            Content = $"테이블 번호: {_tableList.IndexOf(table)+1}, 테이블 상태: {tableStatus}",
                             Background = Brushes.LightBlue,
                             Margin = new Thickness(5),
                             Width = 330, // 너비 설정
@@ -114,7 +124,6 @@ namespace myProjectC
             }
         }
 
-        
         // 테이블 삭제 버튼
         private void DeleteTable_Button_Click(object sender, RoutedEventArgs e)
         {
