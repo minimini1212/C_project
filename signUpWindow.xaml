@@ -9,16 +9,18 @@
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBox Name="UsernameTextBox" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="UsernameTextBox_TextChanged"/>
+            <TextBox Name="NicknameTextBox" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="NicknameTextBox_TextChanged"/>
             <PasswordBox Name="PasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" PasswordChanged="PasswordBox_TextChanged"/>
             <PasswordBox Name="RePasswordBox" Width="200" Height="30" Margin="0,0,0,10" Tag="비밀번호" PasswordChanged="RePasswordBox_TextChanged"/>
             <TextBox Name="PhoneNumber" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="PhoneNumber_TextChanged"/>
             <TextBox Name="BilliardScore" Width="200" Height="30" Margin="0,0,0,10" Tag="사용자 이름" TextChanged="BilliardScore_TextChanged"/>
             <Button Content="회원가입" Width="100" Height="30" Click="signUp_Click"/>
         </StackPanel>
-        <Label Content="이름" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="44" Margin="228,102,0,0"/>
-        <Label Content="비밀번호" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="60" Margin="220,143,0,0"/>
-        <Label Content="비밀번호확인" HorizontalAlignment="Left" Height="33" VerticalAlignment="Top" Width="82" Margin="209,184,0,0"/>
-        <Label Content="전화번호" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="60" Margin="220,222,0,0"/>
-        <Label Content="당구 점수" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="60" Margin="220,264,0,0"/>
+        <Label Content="이름" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="44" Margin="236,82,0,0"/>
+        <Label Content="닉네임" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="44" Margin="228,126,0,0"/>
+        <Label Content="비밀번호" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="60" Margin="220,166,0,0"/>
+        <Label Content="비밀번호확인" HorizontalAlignment="Left" Height="33" VerticalAlignment="Top" Width="82" Margin="209,208,0,0"/>
+        <Label Content="전화번호" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="60" Margin="220,246,0,0"/>
+        <Label Content="당구 점수" HorizontalAlignment="Left" Height="31" VerticalAlignment="Top" Width="60" Margin="220,286,0,0"/>
     </Grid>
 </Window>

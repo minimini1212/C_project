@@ -19,21 +19,12 @@ namespace myProjectC
     /// Window1.xaml에 대한 상호 작용 논리
     /// </summary>
 
-    // required를 사용하지 않을 때
-    //public class UserData
-    //{
-    //    public string UserName { get; set; } = string.Empty; // 기본값 설정
-    //    public string Password { get; set; } = string.Empty;
-    //    public string RePassword { get; set; } = string.Empty;
-    //    public string PhoneNumber { get; set; } = string.Empty;
-    //    public string BillibordScore { get; set; } = string.Empty;
-    //}
-
     // 유저 데이터 클래스
     public class UserData
     {
         // required null값을 허용 X
         public required string UserName { get; set; }
+        public required string NickName { get; set; }
         public required string Password { get; set; }
         public required string RePassword { get; set; }
         public required string PhoneNumber { get; set; }
@@ -44,6 +35,7 @@ namespace myProjectC
     public partial class signUpWindow : Window
     {
         private MySqlConnection _conn;  // MySQL 연결 변수 -> mainwindow에서 받아온다
+        private string _existedNickname; // 닉네임 존재여부확인을 위한 변수 
 
         // 생성자에서 MySQL 연결을 받아옴
         public signUpWindow(MySqlConnection conn)
@@ -55,6 +47,7 @@ namespace myProjectC
         private UserData _userData = new UserData // UserData 객체 생성
         {
             UserName = "",  // 기본값 설정
+            NickName = "",
             Password = "",
             RePassword = "",
             PhoneNumber = "",
@@ -66,6 +59,12 @@ namespace myProjectC
         {
             _userData.UserName = UsernameTextBox.Text;
         }
+        // UserData 클래스의 Nickname 속성에 TextBox에서 입력된 값을 저장
+        private void NicknameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _userData.NickName = NicknameTextBox.Text;
+        }
+
         // UserData 클래스의 Password 속성에 TextBox에서 입력된 값을 저장
         private void PasswordBox_TextChanged(object sender, RoutedEventArgs e)
         {
@@ -90,10 +89,11 @@ namespace myProjectC
         // 회원가입 클릭 버튼
         private void signUp_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"Username: {_userData.UserName}\nPassword: {_userData.Password}\nRePassword: {_userData.RePassword}\nPhoneNumber: {_userData.PhoneNumber}\nBilliardScore: {_userData.BilliardScore}");
+            MessageBox.Show($"Username: {_userData.UserName}\nNickname: {_userData.NickName}\nPassword: {_userData.Password}\nRePassword: {_userData.RePassword}\nPhoneNumber: {_userData.PhoneNumber}\nBilliardScore: {_userData.BilliardScore}");
 
             // 문자열이 비어 있는지 확인 메서드 -> string.IsNullOrEmpty() 또는 string.IsNullOrWhiteSpace() -> boolean타입 반환
             if (string.IsNullOrWhiteSpace(_userData.UserName) ||
+                string.IsNullOrWhiteSpace(_userData.NickName) ||
                 string.IsNullOrWhiteSpace(_userData.Password) ||
                 string.IsNullOrWhiteSpace(_userData.RePassword) ||
                 string.IsNullOrWhiteSpace(_userData.PhoneNumber) ||
@@ -102,6 +102,19 @@ namespace myProjectC
                 MessageBox.Show("항목에 알맞게 입력해주세요");
                 return;
             }
+
+            IsNickName(_userData.NickName);
+            if (!string.IsNullOrWhiteSpace(_existedNickname)) 
+            {
+                MessageBox.Show("이미 존재하는 닉네임입니다.");
+                NicknameTextBox.Text = string.Empty;
+                // 존재하는 닉네임을 초기화하지 않으면 그대로 처음 중복 닉네임이
+                // 그대로 남아있기 때문에 닉네임 바꿔도
+                // 이미 존재하는 닉네임입니다. 메시지가 계속 뜸.
+                _existedNickname = string.Empty;
+                return;
+            }
+
             if (_userData.Password != _userData.RePassword)
             {
                 MessageBox.Show("비밀번호가 일치하지 않습니다.");
@@ -114,7 +127,7 @@ namespace myProjectC
             MessageBox.Show("회원가입이 완료되었습니다.");
             try
             {
-                Insert(_userData.UserName, _userData.Password, _userData.PhoneNumber, _userData.BilliardScore);
+                Insert(_userData.UserName, _userData.Password, _userData.PhoneNumber, _userData.BilliardScore, _userData.NickName);
                 MessageBox.Show($"DB에 입력 성공");
                 this.Close();
 
@@ -125,11 +138,11 @@ namespace myProjectC
             }
         }
 
-        private void Insert(string userName, string password, string phoneNumber, int billiardScore)
+        private void Insert(string userName, string password, string phoneNumber, int billiardScore, string nickName)
         {
             string query = "" +
-                "INSERT INTO minic_db.userdata (user_name, password, phone_number, billiard_score) " +
-                "VALUES (@userName, @password, @phoneNumber, @billiardScore);";
+                "INSERT INTO minic_db.userdata (user_name, password, phone_number, billiard_score, nick_name) " +
+                "VALUES (@userName, @password, @phoneNumber, @billiardScore, @nickName);";
 
             using (MySqlCommand cmd = _conn.CreateCommand())
             {
@@ -139,17 +152,28 @@ namespace myProjectC
                 cmd.Parameters.AddWithValue("@password", password);
                 cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
                 cmd.Parameters.AddWithValue("@billiardScore", billiardScore);
-                //cmd.Parameters.Add("@userName", MySqlDbType.VarChar);
-                //cmd.Parameters.Add("@password", MySqlDbType.VarChar);
-                //cmd.Parameters.Add("@phoneNumber", MySqlDbType.VarChar);
-                //cmd.Parameters.Add("@billiardScore", MySqlDbType.Int32);
-
-                //cmd.Parameters["@userName"].Value = userName;
-                //cmd.Parameters["@password"].Value = password;
-                //cmd.Parameters["@phoneNumber"].Value = phoneNumber;
-                //cmd.Parameters["@billiardScore"].Value = billiardScore;
+                cmd.Parameters.AddWithValue("@nickName", nickName);
 
                 cmd.ExecuteNonQuery();  // 데이터베이스에 명령 실행
+            }
+        }
+
+        private void IsNickName(string nickName) 
+        {
+            string query = "" +
+            "SELECT * FROM minic_db.userdata WHERE nick_name = @nick_name";
+
+            using (MySqlCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = query;
+                cmd.Parameters.AddWithValue("@nick_name", nickName);
+                using (MySqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        _existedNickname = (string)dr["nick_name"];
+                    }
+                }
             }
         }
     }

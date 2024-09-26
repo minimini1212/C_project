@@ -24,7 +24,7 @@ namespace myProjectC
     public class SelectUserData
     {
         // required null값을 허용 X
-        public required string UserName { get; set; }
+        public required string Nickname { get; set; }
         public required string Password { get; set; }
 
     }
@@ -35,7 +35,7 @@ namespace myProjectC
         private MainWindow _mainWindow; // 단순히 필드 선언 (아직 객체 없음)
         private MySqlConnection _conn;  // MySQL 연결 변수 -> mainwindow에서 받아온다
 
-        private string _selectName;  // 선택한 사용자 이름을 저장하는 필드
+        private int _userId;  // 선택한 사용자 이름을 저장하는 필드
         private string _selectPassword;  // 선택한 비밀번호를 저장하는 필드
 
         public LoginWindow(MainWindow mainWindow, MySqlConnection conn)
@@ -47,13 +47,13 @@ namespace myProjectC
 
         private SelectUserData _userData = new SelectUserData // UserData 객체 생성
         {
-            UserName = "",  // 기본값 설정
+            Nickname = "",  // 기본값 설정
             Password = ""
         };
 
-        private void UsernameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void NicknameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _userData.UserName = UsernameTextBox.Text;
+            _userData.Nickname = NicknameTextBox.Text;
         }
 
         private void PasswordBox_TextChanged(object sender, RoutedEventArgs e)
@@ -66,10 +66,35 @@ namespace myProjectC
         {
             try
             {
-                Select(_userData.UserName, _userData.Password);
-                MessageBox.Show($"{_selectName}, {_selectPassword}");
+                SelectIdByNickname(_userData.Nickname);
+                SelectIdByPassword(_userId);
+
+                if (_userId == 0) 
+                {
+                    MessageBox.Show($"존재하지 않는 닉네임입니다.");
+                    NicknameTextBox.Text = string.Empty;
+                    PasswordBox.Password = string.Empty;
+                    return;
+                }
+
+                if (_userData.Password != _selectPassword) 
+                {
+                    MessageBox.Show($"비밀번호가 일치하지 않습니다.\n {_userData.Password}, {_selectPassword}");
+                    _userData.Password = string.Empty;
+                    _selectPassword = string.Empty;
+                    NicknameTextBox.Text = string.Empty;
+                    PasswordBox.Password = string.Empty;
+                    _userId = 0;
+                    return;
+                }
+
                 // 로그인 성공 시 MainWindow에서 standbyScreen 페이지로 이동
+                MessageBox.Show($"로그인에 성공하였습니다.");
+                UpdateStateByLogIn(_userId);
                 _mainWindow.LoadStandbyScreen();
+                // 입장 회원 명단 실행
+                _mainWindow.LoadLogInUserListWindow();
+
                 this.Close();
             } 
             catch (Exception ex)
@@ -78,32 +103,67 @@ namespace myProjectC
             }
         }
 
-        private void Select(string userName, string password)
+        // 닉네임으로 user_Id 가져오는 메서드
+        private void SelectIdByNickname(string nickname)
         {
             string query = "" +
-            "SELECT * FROM minic_db.userdata WHERE user_name = @user_name and password = @password";
+            "SELECT * FROM minic_db.userdata WHERE nick_name = @nick_name";
 
             using (MySqlCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = query;
-                cmd.Parameters.AddWithValue("@user_name", userName);
-                cmd.Parameters.AddWithValue("@password", password);
+                cmd.Parameters.AddWithValue("@nick_name", nickname);
                 using (MySqlDataReader dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        _selectName = (string)dr["user_name"];
-                        _selectPassword = (string)dr["password"];
-                        //var phone_number = (string)dr["phone_number"];
-                        //var billiard_score = (int)dr["billiard_score"];
-                        // ---start
-                        // data1 => true
-                        // data2 => true
-                        // data3 => true
-                        // ---end => false
+                        _userId = (int)dr["user_id"];
                     }
                 }
             }
-        }  
+        }
+
+        // user_id로 비밀번호 가져오기
+        private void SelectIdByPassword(int userId)
+        {
+            string query = "" +
+            "SELECT * FROM minic_db.userdata WHERE user_id = @user_Id";
+
+            using (MySqlCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = query;
+                cmd.Parameters.AddWithValue("@user_Id", userId);
+                using (MySqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        _selectPassword = (string)dr["password"];
+                    }
+                }
+            }
+        }
+
+        // 로그인 시 입장상태와 게임가능상태 변경
+        private void UpdateStateByLogIn(int userId)
+        {
+            string query = "UPDATE minic_db.userdata SET entry = true, game_possibility = true WHERE user_id = @user_Id";
+
+            using (MySqlCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = query;
+                // ExecuteNonQuery는 데이터 변경(INSERT, UPDATE, DELETE) 작업에 사용
+                cmd.Parameters.AddWithValue("@user_Id", userId);
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    MessageBox.Show("상태변경완료.");
+                }
+                else
+                {
+                    MessageBox.Show("상태변경실패");
+                }
+            }
+        }
     }
 }
