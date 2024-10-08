@@ -34,27 +34,30 @@ namespace myProjectC
             }
         }
 
+        private LogInUserListWindow _LogInUserListWindow;
+        private standbyScreen _standbyScreen;
+        private TableInPlay _TableInPlay;
+        private Table1 _Table1;
+
         public MainWindow()
         {
             InitializeComponent();
             Connection();
+            
         }
 
-        // 로그인 후 standbyScreen화면으로 넘기기 위한 메서드
-        public void LoadStandbyScreen()
+        // 관리자 로그인 시 실행할 것들
+        public void rootsMethod()
         {
+            _LogInUserListWindow = new LogInUserListWindow(_conn);
+            _standbyScreen = new standbyScreen(_conn);
+            _TableInPlay = new TableInPlay(_conn);
+            _Table1 = new Table1(_conn, _standbyScreen, _LogInUserListWindow);
 
-            // 초기 화면 숨기기
-            InitialGrid.Visibility = Visibility.Collapsed;
-
-            // standbyScreen 페이지를 Frame에 로드
-            MainFrame.Navigate(new standbyScreen(_conn));
-        }
-
-        public void LoadLogInUserListWindow() 
-        {
-            LogInUserListWindow logInUserListWindow = new LogInUserListWindow(_conn);
-            logInUserListWindow.Show();
+            _LogInUserListWindow.Show();
+            _standbyScreen.Show();
+            _TableInPlay.Show();
+            _Table1.Show();
         }
 
         private void signUp(object sender, RoutedEventArgs e)
@@ -63,10 +66,9 @@ namespace myProjectC
             signUpWindow.Show();
         }
 
-
         private void signIn(object sender, RoutedEventArgs e)
         {
-            LoginWindow loginWindow = new LoginWindow(this, _conn);
+            LoginWindow loginWindow = new LoginWindow(this, _conn, _LogInUserListWindow, _standbyScreen); 
             loginWindow.Show();
         }
     }

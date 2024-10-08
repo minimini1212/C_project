@@ -5,6 +5,9 @@
     <Compile Update="LoginWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="PlayingGameTable1.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="standbyScreen.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -14,9 +17,18 @@
     <Compile Update="LogInUserListWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="TableInPlay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Table1.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PlayingGameTable1.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="standbyScreen.xaml">
@@ -26,6 +38,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="LogInUserListWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="TableInPlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Table1.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
