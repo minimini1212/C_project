@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace myProjectC
     /// <summary>
     /// standbyScreen.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class standbyScreen : Page
+    public partial class standbyScreen : Window
     {
 
         private MySqlConnection _conn; // MySQL 연결을 위한 필드 추가
@@ -35,6 +36,12 @@ namespace myProjectC
 
         // 지금 당장 사용하지는 않지만 좋은 공부가 된 부분
         private List<TableData> _tableList = new List<TableData>(); // 사용자 데이터를 저장할 리스트
+        
+        // 각각의 당구테이블에서 사용할 테이블정보
+        public static class TableList
+        {
+            public static List<TableData> _tableListData = new List<TableData>();
+        }
 
         public class TableData 
         {
@@ -49,8 +56,7 @@ namespace myProjectC
             RefreshTableDisplay(); // 화면을 새로 고침
         }
 
-        // 당구테이블 추가
-        private void InsertTable()
+        // 당구테이블 추가3        private void InsertTable()
         {
             string query = "" +
                 "INSERT INTO minic_db.game_table (is_available) " +
@@ -68,7 +74,7 @@ namespace myProjectC
         }
 
         // 테이블 화면 새로 고침
-        private void RefreshTableDisplay()
+        public void RefreshTableDisplay()
         {
             TableGrid.Children.Clear(); // 기존의 테이블 레이블을 모두 제거
             _tableList.Clear(); // 테이블 리스트 초기화
@@ -95,13 +101,14 @@ namespace myProjectC
                         };
 
                         _tableList.Add(table);
+                        TableList._tableListData.Add(table);
 
                         if (table.isAvailable) {
                             tableStatus = "게임 가능";
                         } 
                         else if (!table.isAvailable) 
                         {
-                            tableStatus = "게임 불가능";
+                            tableStatus = "게임 중";
                         }
 
                         // 새로운 테이블을 나타내는 Label을 생성
