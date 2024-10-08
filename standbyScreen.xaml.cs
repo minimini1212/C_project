@@ -56,7 +56,8 @@ namespace myProjectC
             RefreshTableDisplay(); // 화면을 새로 고침
         }
 
-        // 당구테이블 추가3        private void InsertTable()
+        // 당구테이블 추가
+        private void InsertTable()
         {
             string query = "" +
                 "INSERT INTO minic_db.game_table (is_available) " +

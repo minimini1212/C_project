@@ -34,15 +34,19 @@ namespace myProjectC
         // standby 화면으로 넘기기위한 작업
         private MainWindow _mainWindow; // 단순히 필드 선언 (아직 객체 없음)
         private MySqlConnection _conn;  // MySQL 연결 변수 -> mainwindow에서 받아온다
+        private LogInUserListWindow _LogInUserListWindow;
+        private standbyScreen _standbyScreen;
 
         private int _userId;  // 선택한 사용자 이름을 저장하는 필드
         private string _selectPassword;  // 선택한 비밀번호를 저장하는 필드
 
-        public LoginWindow(MainWindow mainWindow, MySqlConnection conn)
+        public LoginWindow(MainWindow mainWindow, MySqlConnection conn, LogInUserListWindow LogInUserListWindow, standbyScreen standbyScreen)
         {
             InitializeComponent();
             _mainWindow = mainWindow;  // MainWindow 객체를 받음
             _conn = conn;
+            _LogInUserListWindow = LogInUserListWindow;
+            _standbyScreen = standbyScreen;
         }
 
         private SelectUserData _userData = new SelectUserData // UserData 객체 생성
@@ -88,14 +92,26 @@ namespace myProjectC
                     return;
                 }
 
-                // 로그인 성공 시 MainWindow에서 standbyScreen 페이지로 이동
-                MessageBox.Show($"로그인에 성공하였습니다.");
-                UpdateStateByLogIn(_userId);
-                _mainWindow.LoadStandbyScreen();
-                // 입장 회원 명단 실행
-                _mainWindow.LoadLogInUserListWindow();
+                if (_userData.Nickname == "roots")
+                {
+                    _mainWindow.rootsMethod();
+                    this.Close();
+                }
+                else 
+                {
+                    // 로그인 성공 시
+                    MessageBox.Show($"로그인에 성공하였습니다.");
+                    if (_LogInUserListWindow == null)
+                    {
+                        MessageBox.Show($"현재 시스템은 오프상태입니다.");
+                        this.Close();
+                        return;
+                    }
+                    UpdateStateByLogIn(_userId);
+                    _LogInUserListWindow.InjectOrder(_userId);
+                    this.Close();
+                }
 
-                this.Close();
             } 
             catch (Exception ex)
             {

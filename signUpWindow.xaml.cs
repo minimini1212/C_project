@@ -29,6 +29,8 @@ namespace myProjectC
         public required string RePassword { get; set; }
         public required string PhoneNumber { get; set; }
         public required int BilliardScore { get; set; }
+
+        //public ICollection<GameRecord> GameRecords { get; set; }
     }
 
 
