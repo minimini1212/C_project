@@ -1,0 +1,23 @@
+﻿<Window x:Class="myProjectC.Table1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:myProjectC"
+        mc:Ignorable="d"
+        Title="Table1" Height="450" Width="800">
+    <Grid>
+        <Frame Name="Table1Frame" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Grid x:Name="Table1Grid">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBox Name="UserNicknameTextBox1" Width="200" Height="30"/>
+                <TextBox Name="UserNicknameTextBox2" Width="200" Height="30"/>
+                    <Button Name="StartGameButton" Width="200" Height="50" Margin="0,10,0,0" Content="게임 시작" Click="StartGameButton_Click"/>
+                </StackPanel>
+            <Label Content="게이머1" HorizontalAlignment="Left" Height="31" VerticalAlignment="Top" Width="86" Margin="209,157,0,0"/>
+            <Label Content="게이머2" HorizontalAlignment="Left" Height="31" VerticalAlignment="Top" Width="86" Margin="209,186,0,0"/>
+            <Button Content="선공" HorizontalAlignment="Left" Height="31" Margin="525,154,0,0" VerticalAlignment="Top" Width="83" Click="FirstAttackButtonUp_Click"/>
+            <Button Content="선공" HorizontalAlignment="Left" Height="31" Margin="525,186,0,0" VerticalAlignment="Top" Width="83" Click="FirstAttackButtonDown_Click"/>
+        </Grid>
+    </Grid>
+</Window>
