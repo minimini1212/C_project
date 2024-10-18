@@ -9,19 +9,24 @@
       Title="PlayingGameTable1">
 
     <Grid x:Name="PlayingGameTable1Grid" Background="White">
-        <Label x:Name="LeftNickname"  FontSize="25" Background="Yellow" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="53" VerticalAlignment="Top" Width="134" Margin="78,46,0,0"/>
-        <Label x:Name="RightNickname" FontSize="25" Background="Yellow" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="53" VerticalAlignment="Top" Width="134" Margin="588,46,0,0"/>
+        <Label x:Name="LeftNickname"  FontSize="25" Background="#FFD4D4B4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="53" VerticalAlignment="Top" Width="134" Margin="78,46,0,0"/>
+        <Label x:Name="RightNickname" FontSize="25" Background="#FFD4D4B4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="53" VerticalAlignment="Top" Width="134" Margin="588,46,0,0"/>
         <Label x:Name="LeftUserScore" FontSize="60" Background="Yellow" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="167" VerticalAlignment="Center" Width="134" Margin="78,0,0,0" Content=""/>
         <Label x:Name="RightUserScore" FontSize="60" Background="Yellow" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="167" VerticalAlignment="Center" Width="134" Margin="588,0,0,0"/>
-        <Button Content="-1" HorizontalAlignment="Left" Height="52" Margin="55,348,0,0" VerticalAlignment="Top" Width="51" Click="LeftScoreOneMinusButton_Click"/>
-        <Button Content="+1" HorizontalAlignment="Left" Height="52" Margin="120,348,0,0" VerticalAlignment="Top" Width="51" Click="LeftScoreOneButton_Click"/>
-        <Button Content="+2" HorizontalAlignment="Left" Height="52" Margin="187,348,0,0" VerticalAlignment="Top" Width="51" Click="LeftScoreTwoButton_Click"/>
-        <Button Content="-1" HorizontalAlignment="Left" Height="52" Margin="563,348,0,0" VerticalAlignment="Top" Width="51" Click="RightScoreOneMinusButton_Click"/>
-        <Button Content="+1" HorizontalAlignment="Left" Height="52" Margin="630,348,0,0" VerticalAlignment="Top" Width="51" Click="RightScoreOneButton_Click"/>
-        <Button Content="+2" HorizontalAlignment="Left" Height="52" Margin="698,348,0,0" VerticalAlignment="Top" Width="51" Click="RightScoreTwoButton_Click"/>
-        <Button Content="게임종료" HorizontalAlignment="Left" Height="52" Margin="297,348,0,0" VerticalAlignment="Top" Width="180" Click="EndGameButton_Click"/>
-        <Label x:Name="GameTime" FontSize="25" Background="Yellow" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Height="53" VerticalAlignment="Top" Width="134" Margin="0,46,0,0"/>
-        
+        <Button x:Name="LeftScoreOneMinus" Content="-1" HorizontalAlignment="Left" Height="52" Margin="55,348,0,0" VerticalAlignment="Top" Width="51" Click="LeftScoreOneMinusButton_Click"/>
+        <Button x:Name="LeftScoreOne" Content="+1" HorizontalAlignment="Left" Height="52" Margin="120,348,0,0" VerticalAlignment="Top" Width="51" Click="LeftScoreOneButton_Click"/>
+        <Button x:Name="LeftScoreTwo" Content="+2" HorizontalAlignment="Left" Height="52" Margin="187,348,0,0" VerticalAlignment="Top" Width="51" Click="LeftScoreTwoButton_Click"/>
+        <Button x:Name="RightScoreOneMinus" Content="-1" HorizontalAlignment="Left" Height="52" Margin="563,348,0,0" VerticalAlignment="Top" Width="51" Click="RightScoreOneMinusButton_Click"/>
+        <Button x:Name="RightScoreOne" Content="+1" HorizontalAlignment="Left" Height="52" Margin="630,348,0,0" VerticalAlignment="Top" Width="51" Click="RightScoreOneButton_Click"/>
+        <Button x:Name="RightScoreTwo" Content="+2" HorizontalAlignment="Left" Height="52" Margin="698,348,0,0" VerticalAlignment="Top" Width="51" Click="RightScoreTwoButton_Click"/>
+        <Button Content="게임종료" HorizontalAlignment="Center" Height="52" Margin="0,348,0,0" VerticalAlignment="Top" Width="62" Click="EndGameButton_Click"/>
+        <Label x:Name="GameTime" FontSize="25" Background="LightBlue" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Height="43" VerticalAlignment="Top" Width="134"/>
+        <Label Content="공격" x:Name="LeftAttack" FontSize="15" Background="green" Visibility="Hidden" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="225,0,0,0" VerticalAlignment="Center" Height="48" Width="35"/>
+        <Label Content="공격" x:Name="RightAttack" FontSize="15" Background="green" Visibility="Hidden" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="539,0,0,0" VerticalAlignment="Center" Height="48" Width="35"/>
+        <Button Content="턴 넘기기" HorizontalAlignment="Center" Height="52" Margin="0,256,0,0" VerticalAlignment="Top" Width="180" Click="TurnButton_Click"/>
+        <Label x:Name="Inning" FontSize="25" Background="#FFD4D4B4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Height="53" VerticalAlignment="Top" Width="134" Margin="0,48,0,0"/>
+
+
 
 
     </Grid>
