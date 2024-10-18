@@ -51,6 +51,14 @@ namespace myProjectC
         // 게임 시작 버튼
         private void StartGameButton_Click(object sender, RoutedEventArgs e)
         {
+
+            // 선공여부
+            if (string.IsNullOrWhiteSpace(FirstAttackUser)) 
+            {
+                MessageBox.Show("선공을 선택해주세요");
+                return;
+            }
+
             startTime = DateTime.Now;
             string userNickname1 = UserNicknameTextBox1.Text;
             string userNickname2 = UserNicknameTextBox2.Text;
@@ -64,6 +72,8 @@ namespace myProjectC
             if (!string.IsNullOrWhiteSpace(userNickname1) && !string.IsNullOrWhiteSpace(userNickname2))
             { 
                 MessageBox.Show($"{userNickname1}님과 {userNickname2}님이 게임을 시작합니다!");
+
+                // 테이블 및 유저 상태 변경 메서드 및 화면 초기화
                 UpdateStateByPlayGame(userNickname1, false);
                 UpdateStateByPlayGame(userNickname2, false);
                 UpdateTableStateByPlayGame(tableList[0].tableId, false);
@@ -76,7 +86,7 @@ namespace myProjectC
                 Table1Grid.Visibility = Visibility.Collapsed;
 
                 _PlayingGameTable1 = new PlayingGameTable1(_conn, this);
-                // standbyScreen 페이지를 Frame에 로드
+                // PlayingGameTable1 페이지를 Frame에 로드
                 Table1Frame.Navigate(_PlayingGameTable1);
 
             }
@@ -184,6 +194,7 @@ namespace myProjectC
             }
         }
 
+        // 선공
         private void FirstAttackButtonUp_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(UserNicknameTextBox1.Text))
@@ -197,6 +208,7 @@ namespace myProjectC
             }
         }
 
+        // 선공
         private void FirstAttackButtonDown_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(UserNicknameTextBox2.Text))

@@ -15,6 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static myProjectC.PlayingGameTable1;
+// 게임시간 설정을 위함
+using System.Windows.Threading;
+using System.Collections;
 
 namespace myProjectC
 {
@@ -33,6 +36,12 @@ namespace myProjectC
         private int scoreUser2;
         private DateTime endTime;
         private TimeSpan difference;
+        private int InningNumber = 1;
+        private int count;
+        private string attackUser;
+        private DispatcherTimer timer;
+        private DateTime today = DateTime.Today;
+
 
         public PlayingGameTable1(MySqlConnection conn, Table1 _table1)
         {
@@ -45,6 +54,8 @@ namespace myProjectC
             RightUserScore.Content = scoreUser2;
             User1 = SelectUserDataByNickname(table1.endGameUserNickname1);
             User2 = SelectUserDataByNickname(table1.endGameUserNickname2);
+            FirstAttackAndStartBackground();
+            StartGame();
         }
 
         public class PlayGameUserData
@@ -107,15 +118,7 @@ namespace myProjectC
         // 게임 종료시 메서드
         private void EndGameMethod()
         {
-            // 게임 시간 측정
-            endTime = DateTime.Now;
-            difference = endTime - table1.startTime;
-            double minutes = Math.Ceiling(difference.TotalMinutes);
-            
-
-            MessageBox.Show($"{table1.endGameUserNickname1}님과 {table1.endGameUserNickname2}님의 게임을 종료합니다!");
-            MessageBox.Show($"점수: {scoreUser1}, {scoreUser2}");
-            MessageBox.Show($"게임시간: {minutes}분");
+            // 테이블 및 유저 상태 변경 메서드 및 화면 초기화
             table1.UpdateStateByPlayGame(table1.endGameUserNickname1, true);
             table1.UpdateStateByPlayGame(table1.endGameUserNickname2, true);
             table1.UpdateTableStateByPlayGame(table1.tableList[0].tableId, true);
@@ -123,6 +126,7 @@ namespace myProjectC
             table1.UpdateUserStateByPlayGame(table1.endGameUserNickname1, true);
             table1.UpdateUserStateByPlayGame(table1.endGameUserNickname2, true);
             table1.logInUserListWindow.LoadUserList(table1.logInUserListWindow._userList);
+
 
             // 화면 전환
             table1.Table1Grid.Visibility = Visibility.Visible;
@@ -136,20 +140,45 @@ namespace myProjectC
         // 점수가 자기 수지에 맞거나 넘치면 그 수지를 기준으로 게임 끝내는 메서드
         private void scoreFillEndGame (int score, int billiardScoreUser) 
         {
+            // 게임 시간 측정
+            endTime = DateTime.Now;
+            difference = endTime - table1.startTime;
+            double minutes = Math.Ceiling(difference.TotalMinutes);
+
             if (score >= billiardScoreUser) 
             {
-                if (billiardScoreUser == User1.BilliardScore)
+
+                MessageBox.Show($"{table1.endGameUserNickname1}님과 {table1.endGameUserNickname2}님의 게임을 종료합니다!");
+                MessageBox.Show($"점수: {scoreUser1}, {scoreUser2}");
+                MessageBox.Show($"게임시간: {minutes}분");
+
+                try
                 {
-                    scoreUser1 = billiardScoreUser;
-                    LeftUserScore.Content = scoreUser1;
+                    if (billiardScoreUser == User1.BilliardScore)
+                    {
+                        scoreUser1 = billiardScoreUser;
+                        LeftUserScore.Content = scoreUser1;
+
+                        InsertGameRecord(User1.UserId, User2.UserId, minutes, today.ToString("yyyy-MM-dd"), scoreUser1,"win", InningNumber);
+                        InsertGameRecord(User2.UserId, User1.UserId, minutes, today.ToString("yyyy-MM-dd"), scoreUser2,"loss", InningNumber);
+                    }
+                    else if (billiardScoreUser == User2.BilliardScore)
+                    {
+                        InsertGameRecord(User2.UserId, User1.UserId, minutes, today.ToString("yyyy-MM-dd"), scoreUser2, "win", InningNumber);
+                        InsertGameRecord(User1.UserId, User2.UserId, minutes, today.ToString("yyyy-MM-dd"), scoreUser1, "loss", InningNumber);
+                        scoreUser2 = billiardScoreUser;
+                        RightUserScore.Content = scoreUser2;
+                    }
+                    MessageBox.Show($"DB에 입력 성공");
+                    EndGameMethod();
+                    return;
                 }
-                else if (billiardScoreUser == User2.BilliardScore)
+                catch (Exception ex)
                 {
-                    scoreUser2 = billiardScoreUser;
-                    RightUserScore.Content = scoreUser2;
+                    MessageBox.Show($"DB에 입력 실패 \n {ex.Message}");
                 }
-                EndGameMethod();
-                return;
+
+                
             }
         }
 
@@ -179,15 +208,139 @@ namespace myProjectC
             return playGameUserData;
         }
 
+
+        // 선공한테 흰생으로 점수배경색 변경 및 공격표시 띄워주기 및 게임화면 초기화 메서드
+        private void FirstAttackAndStartBackground() 
+        {
+
+            Inning.Content = $"{InningNumber} 이닝";
+
+            attackUser = table1.FirstAttackUser;
+
+            if (table1.FirstAttackUser == table1.endGameUserNickname1)
+            {
+                LeftAttack.Visibility = Visibility.Visible;
+                LeftUserScore.Background = new SolidColorBrush(Colors.GreenYellow);
+                LeftScoreOneMinus.Visibility = Visibility.Hidden;
+                LeftScoreOne.Visibility = Visibility.Hidden;
+                LeftScoreTwo.Visibility = Visibility.Hidden;
+                
+            }
+            else if (table1.FirstAttackUser == table1.endGameUserNickname2)
+            {
+                RightAttack.Visibility = Visibility.Visible;
+                RightUserScore.Background = new SolidColorBrush(Colors.GreenYellow);
+                RightScoreOneMinus.Visibility = Visibility.Hidden;
+                RightScoreOne.Visibility = Visibility.Hidden;
+                RightScoreTwo.Visibility = Visibility.Hidden;
+            }
+        }
+
+        // 턴 넘기기 버튼
+        private void TurnButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (attackUser == table1.endGameUserNickname1)
+            {
+                LeftAttack.Visibility = Visibility.Hidden;
+                LeftUserScore.Background = new SolidColorBrush(Colors.Yellow);
+                RightAttack.Visibility = Visibility.Visible;
+                RightUserScore.Background = new SolidColorBrush(Colors.GreenYellow);
+                LeftScoreOneMinus.Visibility = Visibility.Visible;
+                LeftScoreOne.Visibility = Visibility.Visible;
+                LeftScoreTwo.Visibility = Visibility.Visible;
+                RightScoreOneMinus.Visibility = Visibility.Hidden;
+                RightScoreOne.Visibility = Visibility.Hidden;
+                RightScoreTwo.Visibility = Visibility.Hidden;
+                attackUser = table1.endGameUserNickname2;
+            }
+            else
+            {
+                RightAttack.Visibility = Visibility.Hidden;
+                RightUserScore.Background = new SolidColorBrush(Colors.Yellow);
+                LeftAttack.Visibility = Visibility.Visible;
+                LeftUserScore.Background = new SolidColorBrush(Colors.GreenYellow);
+                RightScoreOneMinus.Visibility = Visibility.Visible;
+                RightScoreOne.Visibility = Visibility.Visible;
+                RightScoreTwo.Visibility = Visibility.Visible;
+                LeftScoreOneMinus.Visibility = Visibility.Hidden;
+                LeftScoreOne.Visibility = Visibility.Hidden;
+                LeftScoreTwo.Visibility = Visibility.Hidden;
+                attackUser = table1.endGameUserNickname1;
+            }
+
+            ++count;
+            if (count % 2 == 0) 
+            {
+                ++InningNumber;
+                Inning.Content = $"{InningNumber} 이닝";
+            }
+        }
+
+        // 게임 시작 시 게임 시간 설정
+        public void StartGame()
+        {
+            // 타이머 초기화 및 설정
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1); // 1초마다 호출
+            timer.Tick += Timer_Tick; // Tick 이벤트 연결
+            timer.Start(); // 타이머 시작
+        }
         
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // 현재 시간에서 시작 시간을 뺀 값을 구해 경과 시간을 계산
+            TimeSpan elapsedTime = DateTime.Now - table1.startTime;
+
+            // 경과 시간을 원하는 형식으로 표시
+            GameTime.Content = $"{Math.Ceiling(elapsedTime.TotalMinutes)}분";
+        }
+
+
+        // 이건 굳이 필요없지만 공부를 위해 남겨두자
+
+        //public void StopGame()
+        //{
+        //    if (timer != null)
+        //    {
+        //        timer.Stop(); // 타이머 중지
+        //    }
+        //}
 
 
 
         // 경기기록을 db에 저장하는 메서드 -> 필요한 것 내 아이디, 상대방 아이디, 게임시간, 게임날짜, 게임이닝 추가
 
-        //private void InsertGameRecord(int playerId, int opponentId, string winLoss, gameDuration) 
-        //{
+        private void InsertGameRecord(
+            int playerId, 
+            int opponentId, 
+            double gameDuration,
+            string gameDate, 
+            int totalScore,
+            string winLoss,
+            int inning)
+        {
+            string query = "" +
+                "INSERT INTO minic_db.game_records (player_id, " +
+                                                  "opponent_id, " +
+                                                  "total_score, " +
+                                                  "game_duration, " +
+                                                  "game_date, " +
+                                                  "win_loss, " +
+                                                  "inning) " +
+                "VALUES (@playerId, @opponentId, @totalScore, @gameDuration, @gameDate, @winLoss, @inning);";   
 
-        //}
+            using (MySqlCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = query;
+                cmd.Parameters.AddWithValue("@playerId", playerId);
+                cmd.Parameters.AddWithValue("@opponentId", opponentId);
+                cmd.Parameters.AddWithValue("@winLoss", winLoss);
+                cmd.Parameters.AddWithValue("@gameDuration", gameDuration);
+                cmd.Parameters.AddWithValue("@gameDate", gameDate);
+                cmd.Parameters.AddWithValue("@totalScore", totalScore);
+                cmd.Parameters.AddWithValue("@inning", inning);
+                cmd.ExecuteNonQuery();  // 데이터베이스에 명령 실행
+            }
+        }
     }
 }
